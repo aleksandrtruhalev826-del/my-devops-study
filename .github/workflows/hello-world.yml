@@ -1,20 +1,29 @@
-name: My First CI Pipeline
+name: Docker Build and Test CI
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  test-and-run:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Run ShellCheck
-        run: shellcheck script.sh  # В Ubuntu на GitHub Actions он уже предустановлен
+        run: shellcheck script.sh
 
-      - name: Run our shell script
+      - name: Build Docker Image
+        run: docker build -t my-app-image .
+
+      - name: Run Container and Verify Output
         run: |
-          chmod +x script.sh
-          ./script.sh
+          OUTPUT=$(docker run my-app-image)
+          echo "Container output: $OUTPUT"
+          if [[ "$OUTPUT" == *"Hello DevOps Student"* ]]; then
+            echo "Test Passed!"
+          else
+            echo "Test Failed!"
+            exit 1
+          fi
