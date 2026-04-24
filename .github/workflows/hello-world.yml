@@ -1,0 +1,22 @@
+name: My First CI Pipeline
+
+# Описываем событие: запускать, когда идет push в ветку main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  run-script:
+    # Выбираем операционную систему для запуска (сервер GitHub)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Шаг 1: Копируем код репозитория на сервер автоматизации
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Шаг 2: Делаем скрипт исполняемым (на всякий случай) и запускаем его
+      - name: Run our shell script
+        run: |
+          chmod +x script.sh
+          ./script.sh
