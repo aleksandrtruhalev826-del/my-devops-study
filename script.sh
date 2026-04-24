@@ -1,0 +1,1 @@
+echo "Hello CI/CD"
