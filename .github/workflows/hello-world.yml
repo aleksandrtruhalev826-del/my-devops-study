@@ -1,29 +1,26 @@
-name: Docker Build and Test CI
+name: Build and Push to Docker Hub
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run ShellCheck
-        run: shellcheck script.sh
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
-        run: docker build -t my-app-image .
-
-      - name: Run Container and Verify Output
-        run: |
-          OUTPUT=$(docker run my-app-image)
-          echo "Container output: $OUTPUT"
-          if [[ "$OUTPUT" == *"Hello DevOps Student"* ]]; then
-            echo "Test Passed!"
-          else
-            echo "Test Failed!"
-            exit 1
-          fi
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Замените ВАШ_ЛОГИН на ваш реальный логин Docker Hub
+          tags: ${{ secrets.DOCKER_USERNAME }}/my-first-container:latest
