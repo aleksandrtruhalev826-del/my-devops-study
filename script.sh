@@ -1,1 +1,1 @@
-echo "Hello CI/CD"
+echo "Hello $USER_NAME"
